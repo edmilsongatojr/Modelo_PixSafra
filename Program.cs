@@ -1,3 +1,5 @@
+using Modelo_PixSafra.Models;
+
 namespace Modelo_PixSafra
 {
     internal static class Program
