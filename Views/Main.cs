@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Xml;
 using RestSharp;
+using Modelo_PixSafra.Models.Security;
 
 namespace Modelo_PixSafra
 {
@@ -32,29 +33,9 @@ namespace Modelo_PixSafra
 
         private void BtnGerarToken_Click(object sender, EventArgs e)
         {
-            SafraAPIService service = new SafraAPIService("123");
-            RestResponse response = service.GeraToken(null);
-            string content = response.Content;
-            if (response.ResponseStatus == ResponseStatus.Error)
-            {
-                // Cria um novo objeto XmlDocument
-                WebBrowser webBrowser = new WebBrowser();
-                webBrowser.Navigate("about:blank");
-                webBrowser.Document.OpenNew(false);
-                webBrowser.Document.Write(content);
-                webBrowser.Refresh();
-                if (!string.IsNullOrEmpty(webBrowser.DocumentText))
-                {
-                    string htmlFormatado = webBrowser.DocumentText;
-                    content = htmlFormatado;
-                }
-                else
-                {
-                    content = "Arquivo Vazio ou Null";
-                }
-            }
-            
-            TxtRetorno.Text = $"{response.StatusDescription.ToUpper()}\n" + content;
+            SafraAPIService service = new SafraAPIService("mk_qMhiH9yhLUK2ntqcRmgDZw");
+            Token token = service.ObterToken(service.GeraToken(null));
+            TxtRetorno.Text = token.GeneratedToken.ToString();
         }
     }
 }

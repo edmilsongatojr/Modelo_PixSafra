@@ -1,4 +1,6 @@
 ﻿using Modelo_PixSafra.Enumeradores;
+using Modelo_PixSafra.Models.Security;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 
@@ -17,27 +19,43 @@ namespace Modelo_PixSafra.Services
             MerchantToken = merchantToken;
         }
 
-        public RestResponse? GeraToken(int? Timeout)
+        public RestResponse GeraToken(int? Timeout)
         {
             try
             {
                 var urlPortal = EnumUrlEndpointsHom.Portal.GetDescription();
                 var endpoint = EnumEndpointsHom.GenerateToken.GetDescription();
-                var request = new RestRequest("", Method.Post).AddHeader("MerchantToken", MerchantToken);
+                var client = new RestClient(urlPortal);
+                var request = new RestRequest(endpoint, Method.Post);
+                request.AddHeader("MerchantToken", MerchantToken);
 
-                if(Timeout.Equals(0) || Timeout.Equals(null)) request.Timeout = 0;
+                if (Timeout.Equals(0) || Timeout.Equals(null)) request.Timeout = 0;
                 else request.Timeout = Convert.ToInt32(Timeout);
 
-                var client = RestClientAPI(urlPortal, endpoint);
-                RestResponse response = client.ExecuteGet(request);
+                RestResponse response = client.ExecutePost(request);
+                ObterToken(response);
 
                 return response;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine("Falha ao GerarToken");
+                Console.WriteLine($"Falha ao GerarToken. Motivo: {ex.Message}");
                 return null;
             }
+        }
+        public Token ObterToken(RestResponse response)
+        {
+            try
+            {
+                var jsonResponseToken = JsonConvert.DeserializeObject<Token>(response.Content);
+                return jsonResponseToken;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Falha ao Obter Token. Motivo: {ex.Message}");
+                return null;
+            }
+
         }
 
         public RestResponse ComunicaAPISafra(string urlEndpoint, string endpoint)
@@ -63,8 +81,6 @@ namespace Modelo_PixSafra.Services
                 throw;
             }
         }
-
-
         private RestClient RestClientAPI(string urlEndpoint, string endpoint)
         {
             return new RestClient(ConcatenaEndpoint(urlEndpoint, endpoint));
