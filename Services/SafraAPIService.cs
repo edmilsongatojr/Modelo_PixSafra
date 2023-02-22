@@ -3,96 +3,48 @@ using Modelo_PixSafra.Models.Security;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Net;
 
 namespace Modelo_PixSafra.Services
 {
     public class SafraAPIService
     {
-        private string merchantToken = string.Empty;
-        private string token = string.Empty;
 
-        public string MerchantToken { get => merchantToken; private set => merchantToken = value; }
-        public string Token { get => token; private set => token = value; }
-
-        public SafraAPIService(string merchantToken)
+        public static T Get<T>(string url, Dictionary<string, string> headers, string? resource) where T : new()
         {
-            MerchantToken = merchantToken;
-        }
-
-        public RestResponse GeraToken(int? Timeout)
-        {
-            try
+            var client = new RestClient(url);
+            var request = new RestRequest(resource);
+            if (headers != null)
             {
-                var urlPortal = EnumUrlEndpointsHom.Portal.GetDescription();
-                var endpoint = EnumEndpointsHom.GenerateToken.GetDescription();
-                var client = new RestClient(urlPortal);
-                var request = new RestRequest(endpoint, Method.Post);
-                request.AddHeader("MerchantToken", MerchantToken);
-
-                if (Timeout.Equals(0) || Timeout.Equals(null)) request.Timeout = 0;
-                else request.Timeout = Convert.ToInt32(Timeout);
-
-                RestResponse response = client.ExecutePost(request);
-                ObterToken(response);
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Falha ao GerarToken. Motivo: {ex.Message}");
-                return null;
-            }
-        }
-        public Token ObterToken(RestResponse response)
-        {
-            try
-            {
-                var jsonResponseToken = JsonConvert.DeserializeObject<Token>(response.Content);
-                return jsonResponseToken;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Falha ao Obter Token. Motivo: {ex.Message}");
-                return null;
-            }
-
-        }
-
-        public RestResponse ComunicaAPISafra(string urlEndpoint, string endpoint)
-        {
-            RestRequest request = NovaRequisicao();
-            RestClient client = RestClientAPI(urlEndpoint, endpoint);
-            RestResponse response = client.Execute(request);
-            try
-            {
-                if (!string.IsNullOrEmpty(endpoint))
+                foreach (var header in headers)
                 {
-                    return response;
-                }
-                else
-                {
-                    Console.WriteLine("Não foi possivel iniciar comunicação, Caminho 'Endpoint' vazio.");
-                    return response;
+                    request.AddHeader(header.Key, header.Value);
                 }
             }
-            catch (Exception)
+            var response = client.Execute<T>(request);
+            return response.Data;
+        }
+        public static T Post<T>(string url, Dictionary<string, string>? headers, string requestObject) where T : new()
+        {
+            var client = new RestClient(url);
+            var request = new RestRequest("", Method.Post);
+            if (!string.IsNullOrEmpty(requestObject)) request.AddParameter("application/json", requestObject, ParameterType.RequestBody);
+
+            if (headers != null)
             {
-
-                throw;
+                foreach (var header in headers)
+                {
+                    request.AddHeader(header.Key, header.Value);
+                }
             }
-        }
-        private RestClient RestClientAPI(string urlEndpoint, string endpoint)
-        {
-            return new RestClient(ConcatenaEndpoint(urlEndpoint, endpoint));
-        }
-
-        private string ConcatenaEndpoint(string urlEndpoint, string endpoint)
-        {
-            return string.Concat(urlEndpoint, endpoint);
-        }
-        private static RestRequest NovaRequisicao()
-        {
-            return new RestRequest();
+            var response = client.Execute<T>(request);
+            return response.Data;
         }
     }
 }
+
+
+
+
+
+

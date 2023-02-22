@@ -12,27 +12,24 @@ namespace Modelo_PixSafra.Services
     public class SecurityService
     {
         private string salt = BCrypt.Net.BCrypt.GenerateSalt();
-
-        private string token = "";
-
         public string Salt { get => salt; private set => salt = value; }
-        public string Token { get => token; private set => token = value; }
+        public string MerchantToken { get; private set; }
+        public string Cnpj { get; private set; }
 
-
-        public SecurityService(string token)
+        public SecurityService(string cnpj, string merchantToken)
         {
-            Token = token;
+            MerchantToken = merchantToken;
+            Cnpj = cnpj;
         }
         public string BCryptToken()
         {
-            var bCryptToken = string.Concat(Token, Salt);
-            string hashBCryptToken = HashPassword(bCryptToken);
-            Authorization authorizationSafra = new(hashBCryptToken);
-            return authorizationSafra.Auth;
+            var bCryptConcatToken = string.Concat(Cnpj, MerchantToken);
+            string hashBCryptToken = HashPassword(bCryptConcatToken,Salt);
+            return hashBCryptToken;
         }
-        private static string HashPassword(string bCryptToken)
+        private static string HashPassword(string bCryptToken, string salt)
         {
-            return BCrypt.Net.BCrypt.HashPassword(bCryptToken);
+            return BCrypt.Net.BCrypt.HashPassword(bCryptToken,salt);
         }
 
        

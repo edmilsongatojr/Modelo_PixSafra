@@ -32,6 +32,8 @@
             this.BtnGerarToken = new System.Windows.Forms.Button();
             this.TxtRetorno = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.BtnGerarAuth = new System.Windows.Forms.Button();
+            this.BtnPix = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BtnTestes
@@ -56,6 +58,7 @@
             // 
             // TxtRetorno
             // 
+            this.TxtRetorno.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.TxtRetorno.Location = new System.Drawing.Point(12, 27);
             this.TxtRetorno.Multiline = true;
             this.TxtRetorno.Name = "TxtRetorno";
@@ -71,11 +74,33 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "Retorno";
             // 
+            // BtnGerarAuth
+            // 
+            this.BtnGerarAuth.Location = new System.Drawing.Point(494, 66);
+            this.BtnGerarAuth.Name = "BtnGerarAuth";
+            this.BtnGerarAuth.Size = new System.Drawing.Size(184, 33);
+            this.BtnGerarAuth.TabIndex = 3;
+            this.BtnGerarAuth.Text = "GERAR AUTH";
+            this.BtnGerarAuth.UseVisualStyleBackColor = true;
+            this.BtnGerarAuth.Click += new System.EventHandler(this.BtnGerarAuth_Click);
+            // 
+            // BtnPix
+            // 
+            this.BtnPix.Location = new System.Drawing.Point(494, 105);
+            this.BtnPix.Name = "BtnPix";
+            this.BtnPix.Size = new System.Drawing.Size(184, 33);
+            this.BtnPix.TabIndex = 4;
+            this.BtnPix.Text = "PIX";
+            this.BtnPix.UseVisualStyleBackColor = true;
+            this.BtnPix.Click += new System.EventHandler(this.BtnPix_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(685, 454);
+            this.Controls.Add(this.BtnPix);
+            this.Controls.Add(this.BtnGerarAuth);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.TxtRetorno);
             this.Controls.Add(this.BtnGerarToken);
@@ -93,6 +118,8 @@
         private Button BtnGerarToken;
         private TextBox TxtRetorno;
         private Label label1;
+        private Button BtnGerarAuth;
+        private Button BtnPix;
         //private Label LblRetornos;
         //private GroupBox groupBox1;
     }

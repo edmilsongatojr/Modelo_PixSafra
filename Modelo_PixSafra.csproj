@@ -19,4 +19,10 @@
     <PackageReference Include="RestSharp" Version="108.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MessagingToolkit.QRCode">
+      <HintPath>..\..\..\..\..\Saurus\Saurus PDV\MessagingToolkit.QRCode.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
